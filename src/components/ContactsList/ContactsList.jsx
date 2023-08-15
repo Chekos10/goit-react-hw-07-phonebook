@@ -5,19 +5,18 @@ import { fetchContactsDataThunk, removeContact } from 'redux/phonebookReducer';
 import { useEffect } from 'react';
 const ContactsList = () => {
   const contacts = useSelector(selectContacts);
-  const filter = useSelector(selectFilters);
+  const filtered =useSelector(selectFilters)
   const dispatch = useDispatch();
 
   useEffect(()=>{
     dispatch(fetchContactsDataThunk())
   },[dispatch])
 
-
   const filterContacts = () => {
     return contacts.filter(
       contact =>
         contact.name &&
-        contact.name.toLowerCase().includes(filter.toLowerCase())
+        contact.name.toLowerCase().includes(filtered.toLowerCase())
     );
   };
   const filteredContacts = filterContacts();
