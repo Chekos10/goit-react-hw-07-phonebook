@@ -1,13 +1,14 @@
 import css from '../ContactsList/contactList.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectContacts, selectFilters } from 'redux/selectors';
-import { fetchContactsDataThunk, removeContact } from 'redux/phonebookReducer';
+import { selectContacts, selectFilters, selectIsLoading } from 'redux/selectors';
 import { useEffect } from 'react';
+import { fetchContactsDataThunk, removeContact } from 'redux/operations';
+import { Loader } from 'components/Loader/Loader';
 const ContactsList = () => {
   const contacts = useSelector(selectContacts);
   const filtered =useSelector(selectFilters)
   const dispatch = useDispatch();
-
+  const isLoading = useSelector(selectIsLoading);
   useEffect(()=>{
     dispatch(fetchContactsDataThunk())
   },[dispatch])
@@ -39,6 +40,7 @@ const ContactsList = () => {
         </li>
       ))}
     </ul>
+    {isLoading && <Loader/>}
     </div>
   );
 };

@@ -1,44 +1,5 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
-const API = 'https://64dbb7d2593f57e435b15603.mockapi.io/contacts';
-
-export const fetchContactsDataThunk = createAsyncThunk(
-  'phonebook/fetchContactsDataThunk',
-  async (_, thunkApi) => {
-    try {
-      const res = await axios.get(`${API}/contacts`);
-      return res.data;
-    } catch (error) {
-      return thunkApi.rejectWithValue(error.message);
-    }
-  }
-);
-
-export const createContact = createAsyncThunk(
-  'phonebook/createContact',
-  async (data, thunkApi) => {
-    try {
-      const res = await axios.post(`${API}/contacts`, data);
-      return res.data;
-    } catch (error) {
-      return thunkApi.rejectWithValue(error.message);
-    }
-  }
-);
-
-export const removeContact = createAsyncThunk(
-  'phonebook/removeContact',
-  async (contactId, thunkApi) => {
-    try {
-      await axios.delete(`${API}/contacts/${contactId}`);
-      return contactId;
-    } catch (error) {
-      return thunkApi.rejectWithValue(error.message);
-    }
-  }
-);
-
-
+import { createSlice } from '@reduxjs/toolkit';
+import  { createContact, fetchContactsDataThunk, removeContact } from './operations';
 
 const initialState = {
   contacts:{
@@ -61,26 +22,42 @@ const phoneBookSlice = createSlice({
   extraReducers: builder => 
   builder
     .addCase(fetchContactsDataThunk.pending, (state)=>{
-        state.isLoading = true;
-        state.error = null;
+        state.contacts.isLoading = true;
+        state.contacts.error = null;
     })
     .addCase(fetchContactsDataThunk.fulfilled, (state,action)=>{
-        state.isLoading = false;
+        state.contacts.isLoading = false;
         state.contacts.items = action.payload;
     })
     .addCase(fetchContactsDataThunk.rejected, (state,action) =>{
-        state.isLoading = false;
-        state.error = action.payload;
+        state.contacts.isLoading = false;
+        state.contacts.error = action.payload;
+    })
+    .addCase(createContact.pending, (state,action) =>{
+      state.contacts.isLoading = true;
+      state.contacts.error = null
     })
     .addCase(createContact.fulfilled, (state,action) =>{
-      state.isLoading = false;
+      state.contacts.isLoading = false;
       state.contacts.items.push(action.payload)
     })
+    .addCase(createContact.rejected, (state,action) =>{
+      state.contacts.isLoading = false;
+      state.contacts.error = action.payload;
+    })
+    .addCase(removeContact.pending, (state, action) =>{
+      state.contacts.isLoading = true;
+      state.contacts.error = null;
+    })
     .addCase(removeContact.fulfilled, (state,action) =>{
-      state.isLoading = false;
+      state.contacts.isLoading = false;
       state.contacts.items = state.contacts.items.filter(
         contact => contact.id !== action.payload
       )
+    })
+    .addCase(removeContact.rejected , (state, action) =>{
+        state.contacts.isLoading = false;
+        state.contacts.error = action.payload;
     })
 });
 

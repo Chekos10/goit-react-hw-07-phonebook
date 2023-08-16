@@ -3,13 +3,13 @@ import css from '../ContactForm/contactForm.module.css'
 import { useDispatch, useSelector } from "react-redux";
 import { selectContacts } from "redux/selectors";
 import { nanoid } from "nanoid";
-import { createContact } from "redux/phonebookReducer";
+import { createContact } from "redux/operations";
+
 
 const ContactForm = () =>{
     const [name,setName] = useState('');
     const [number, setNumber] = useState('')
-    const contacts = useSelector(selectContacts)
-
+    const contacts = useSelector(selectContacts);
     const dispatch = useDispatch()
     
     const handleChange = e =>{
@@ -40,6 +40,7 @@ const ContactForm = () =>{
         dispatch(createContact(newContact))
     }
     return (
+        
         <form onSubmit ={handleSubmit} className={css.phonebookForm}>
         <div className={css.nameArea}>
         <label >Name</label>
